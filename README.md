@@ -23,6 +23,9 @@ A quick reference guide to the most commonly used patterns and functions in PySp
     - [Repartitioning](#repartitioning)
     - [UDFs (User Defined Functions](#udfs-user-defined-functions)
 - [Useful Functions / Tranformations](#useful-functions--transformations)
+- [Define Schema]
+- [Resilient Distributed Datasets (RDDs)]
+- [Working with Delta Files](#Working-with-Delta-Files)
 
 If you can't find what you're looking for, check out the [PySpark Official Documentation](https://spark.apache.org/docs/latest/api/python/pyspark.sql.html) and add it here!
 
@@ -70,7 +73,7 @@ df.dtypes
 
 # Get schema
 df.schema
-
+df.printSchema()
 # Get row count
 df.count()
 
@@ -115,11 +118,11 @@ df = df.filter((df.age > 25) & (df.is_adult == 'Y'))
 df = df.filter(col('first_name').isin([3, 4, 7]))
 
 # Sort results
-df = df.orderBy(df.age.asc()))
+df = df.orderBy(df.age.asc())) # Equivalent to pandas df.sort_values(by='age')
 df = df.orderBy(df.age.desc()))
 ```
 
-#### Joins
+#### Join
 
 ```python
 # Left join in another dataset
@@ -130,6 +133,11 @@ df = df.join(other_table, df.id == other_table.person_id, 'left')
 
 # Match on multiple columns
 df = df.join(other_table, ['first_name', 'last_name'], 'left')
+```
+
+#### Union
+```python
+df.uniom(df2) # Equicalent to pd.concat([df, df2])
 ```
 
 #### Column Operations
@@ -164,6 +172,9 @@ df = df.withColumnRenamed('dob', 'date_of_birth')
 
 # Keep all the columns which also occur in another dataset
 df = df.select(*(F.col(c) for c in df2.columns))
+
+# apply function e.g. min and max
+df.select(F.min(col('Date')), F.max(col('Date'))).show(1)
 
 # Batch Rename/Clean Columns
 for col in df.columns:
@@ -305,6 +316,8 @@ df = df.withColumn('time_of_birth', F.to_timestamp('time_of_birth', 'yyyy-MM-dd 
 df = df.filter(F.year('date_of_birth') == F.lit('2017'))
 
 # Add & subtract days
+df.select(F.date_add('date_of_birth', 3)).show(1)
+
 df = df.withColumn('three_days_after', F.date_add('date_of_birth', 3))
 df = df.withColumn('three_days_before', F.date_sub('date_of_birth', 3))
 
@@ -463,3 +476,17 @@ schema = T.StructType([
 df = spark.read.csv('myfile.csv', schema=schema)
 
 ```
+#### Resilient Distributed Datasets (RDDs)
+
+immutable partition collection of records
+Each record is a python object. Pyspark does not recognise the schema of the record
+Only use RDD when absolutely necessary.
+
+- Transformations -> returns an RDD
+  e.g. 
+- Actions -> returns another type than RDD
+  e.g. reduce, count
+
+#### Working with Delta files
+https://docs.delta.io/latest/quick-start.html#language-python
+
