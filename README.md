@@ -26,6 +26,7 @@ A quick reference guide to the most commonly used patterns and functions in PySp
 - [Define Schema]
 - [Resilient Distributed Datasets (RDDs)]
 - [Working with Delta Files](#Working-with-Delta-Files)
+- [Other sources]
 
 If you can't find what you're looking for, check out the [PySpark Official Documentation](https://spark.apache.org/docs/latest/api/python/pyspark.sql.html) and add it here!
 
@@ -482,6 +483,9 @@ immutable partition collection of records
 Each record is a python object. Pyspark does not recognise the schema of the record
 Only use RDD when absolutely necessary.
 
+RDDs cheat sheet:
+https://images.datacamp.com/image/upload/v1676303379/Marketing/Blog/PySpark_RDD_Cheat_Sheet.pdf
+
 - Transformations -> returns an RDD
   e.g. 
 - Actions -> returns another type than RDD
@@ -490,3 +494,6 @@ Only use RDD when absolutely necessary.
 #### Working with Delta files
 https://docs.delta.io/latest/quick-start.html#language-python
 
+#### Other Sources
+DataCamp
+https://www.datacamp.com/cheat-sheet/pyspark-cheat-sheet-spark-dataframes-in-python
