@@ -137,6 +137,7 @@ df = df.join(other_table, ['first_name', 'last_name'], 'left')
 ```python
 # Add a new static column
 df = df.withColumn('status', F.lit('PASS'))
+df = df.withColumn('One', F.lit(1))
 
 # Construct a new dynamic column
 df = df.withColumn('full_name', F.when(
@@ -149,6 +150,11 @@ df = df.select(
     'age',
     F.col('dob').alias('date_of_birth'),
 )
+
+# Select column
+df.select('name') # Option 1
+df.select(col('name') #  Option 2
+df.select(df.name) # Option 3
 
 # Remove columns
 df = df.drop('mod_dt', 'mod_username')
@@ -328,7 +334,7 @@ df = df.withColumn('full_name', F.array('fname', 'lname'))
 df = df.withColumn('empty_array_column', F.array([]))
 
 # Get element at index – col.getItem(n)
-df = df.withColumn('first_element', F.col("my_array").getItem(0))
+df = df.withColumn('first_element', F.col("my_array").getItem(0)f)
 
 # Array Size/Length – F.size(col)
 df = df.withColumn('array_length', F.size('my_array'))
@@ -338,6 +344,7 @@ df = df.withColumn('flattened', F.flatten('my_array'))
 
 # Unique/Distinct Elements – F.array_distinct(col)
 df = df.withColumn('unique_elements', F.array_distinct('my_array'))
+df.select(column).distinct().show() # Equivalent to pandas df.column.unique()
 
 # Map over & transform array elements – F.transform(col, func: col -> col)
 df = df.withColumn('elem_ids', F.transform(F.col('my_array'), lambda x: x.getField('id')))
@@ -439,5 +446,20 @@ def lookup_and_replace(df1, df2, df1_key, df2_key, df2_value):
         .drop(df2_key)
         .drop(df2_value)
     )
+
+```
+
+#### Define Schema
+
+```python
+from pyspark.sql import types as T
+
+schema = T.StructType([
+    T.StrucField('ID', T.StringType, True), # Field ID type str w/ NaN values
+    T.StrucField('Date', T.TimestampType, True),
+    T.StrucField('Latitude', T.DoubleType, False)
+])
+
+df = spark.read.csv('myfile.csv', schema=schema)
 
 ```
