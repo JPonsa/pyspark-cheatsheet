@@ -421,6 +421,7 @@ df = df.groupBy('gender').agg(F.max('age').alias('max_age_by_gender'))
 # Collect a Set of all Rows in Group:       F.collect_set(col)
 # Collect a List of all Rows in Group:      F.collect_list(col)
 df = df.groupBy('age').agg(F.collect_set('name').alias('person_names'))
+df = df.groupby("Name").sum()
 df = df.agg({"Salary":"sum"})
 
 # Just take the lastest row for each combination (Window Functions)
