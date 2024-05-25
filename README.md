@@ -26,6 +26,7 @@ A quick reference guide to the most commonly used patterns and functions in PySp
 - [Define Schema]
 - [Resilient Distributed Datasets (RDDs)]
 - [Working with Delta Files](#Working-with-Delta-Files)
+- [pyspark Pandas](#Pandas)
 - [Other sources]
 
 If you can't find what you're looking for, check out the [PySpark Official Documentation](https://spark.apache.org/docs/latest/api/python/pyspark.sql.html) and add it here!
@@ -493,6 +494,13 @@ https://images.datacamp.com/image/upload/v1676303379/Marketing/Blog/PySpark_RDD_
 
 #### Working with Delta files
 https://docs.delta.io/latest/quick-start.html#language-python
+
+### Pandas
+
+```python
+import pyspark.pandas as pd
+```
+
 
 #### Other Sources
 DataCamp
