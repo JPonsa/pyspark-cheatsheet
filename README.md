@@ -48,6 +48,8 @@ spark = SparkSession.builder.getOrCreate()
 
 # I/O options: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/io.html
 df = spark.read.csv('/path/to/your/input/file')
+df = spart.read.option('header','true').csv('/path/to/your/input/file', inferSchema=True) # use 1st row as header and infer data type, otherwise all string
+df = spart.read.csv('/path/to/your/input/file', header=True, inferSchema=True)
 ```
 
 ## Basics
@@ -72,6 +74,7 @@ df.columns
 
 # Get columns + column types
 df.dtypes
+df.describe()
 
 # Get schema
 df.schema
@@ -165,6 +168,9 @@ df = df.select(
 df.select('name') # Option 1
 df.select(col('name') #  Option 2
 df.select(df.name) # Option 3
+
+# Select multiple columns
+df.select(['name','age'])
 
 # Remove columns
 df = df.drop('mod_dt', 'mod_username')
