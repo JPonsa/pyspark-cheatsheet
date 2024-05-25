@@ -498,7 +498,10 @@ https://docs.delta.io/latest/quick-start.html#language-python
 ### Pandas
 
 ```python
-import pyspark.pandas as pd
+import pyspark.pandas as ps
+
+psdf = ps.from_pandas(df)
+df = psdf.to_pandas(psdf)
 ```
 
 
