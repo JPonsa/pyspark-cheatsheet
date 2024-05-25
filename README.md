@@ -11,6 +11,7 @@ A quick reference guide to the most commonly used patterns and functions in PySp
     - [Joins](#joins)
     - [Column Operations](#column-operations)
     - [Casting & Coalescing Null Values & Duplicates](#casting--coalescing-null-values--duplicates)
+- [Null values](#Null-values)
 - [String Operations](#string-operations)
     - [String Filters](#string-filters)
     - [String Functions](#string-functions)
@@ -115,6 +116,7 @@ df = df.filter(df.is_adult == 'Y')
 
 # Filter on >, <, >=, <= condition
 df = df.filter(df.age > 25)
+df = df.filter("Salary <= 2000").select(["Name, "age])
 
 # Multiple conditions require parentheses around each condition
 df = df.filter((df.age > 25) & (df.is_adult == 'Y'))
@@ -246,6 +248,26 @@ df = df.filter(df.name.rlike('[A-Z]*ice$'))
 
 # Is In List - col.isin(*cols)
 df = df.filter(df.name.isin('Bob', 'Mike'))
+```
+### Null-values
+
+```python
+df = df.na.drop() # Drop all records with nulls
+df = df.na.drop(how='all') # all values in record must be null, by default 'any'
+df = df.na.drop(how='any', thresh=2) # only records with 2+ null values are deleted.
+df = df.na.drop(how='any', subset=['col1', 'col2']) # only columns 'col1' and 'col2' are considered
+
+df = df.na.fill('Missing value')
+df = df.na.fill('Missing value', ['col1', 'col2'])
+
+from pyspark.ml.feature import Imputer
+
+imputer =  Imputer(
+    inputCols=['col1', 'col2'],
+    outputCols=['{}_imputed'.format(c) for c in ['col1', 'col2]] 
+).setStrategy('mean')
+
+imputer.fit(df).transform(df).show()
 ```
 
 #### String Functions
