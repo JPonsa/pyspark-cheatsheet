@@ -122,7 +122,7 @@ df = df.filter("Salary <= 2000").select(["Name, "age])
 df = df.filter((df.age > 25) & (df.is_adult == 'Y'))
 
 # Compare against a list of allowed values
-df = df.filter(col('first_name').isin([3, 4, 7]))
+df = df.filter(F.col('first_name').isin([3, 4, 7]))
 
 # Sort results
 df = df.orderBy(df.age.asc())) # Equivalent to pandas df.sort_values(by='age')
@@ -168,7 +168,7 @@ df = df.select(
 
 # Select column
 df.select('name') # Option 1
-df.select(col('name') #  Option 2
+df.select(F.col('name') #  Option 2
 df.select(df.name) # Option 3
 
 # Select multiple columns
@@ -184,11 +184,11 @@ df = df.withColumnRenamed('dob', 'date_of_birth')
 df = df.select(*(F.col(c) for c in df2.columns))
 
 # apply function e.g. min and max
-df.select(F.min(col('Date')), F.max(col('Date'))).show(1)
+df.select(F.min(F.col('Date')), F.max(F.col('Date'))).show(1)
 
 # Batch Rename/Clean Columns
 for col in df.columns:
-    df = df.withColumnRenamed(col, col.lower().replace(' ', '_').replace('-', '_'))
+    df = df.withColumnRenamed(col, F.col.lower().replace(' ', '_').replace('-', '_'))
 ```
 
 #### Casting & Coalescing Null Values & Duplicates
