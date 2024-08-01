@@ -109,6 +109,30 @@ dicts = [row.asDict(recursive=True) for row in df.collect()]
 df = df.toPandas()
 ```
 
+### JSON Schema -  Multiple levels
+
+```python
+name_schema = T.StructType(fields=[
+    T.StructField("forename", T.StringType(), True),
+    T.StructField("surname", T.StringType(), True)
+])
+
+drivers_schema = T.StructType(fields=[
+    T.StructField("driverId", T.IntegerType(), False),
+    T.StructField("driverRef", T.StringType(), True),
+    T.StructField("number", T.IntegerType(), True),
+    T.StructField("code", T.StringType(), True),
+    T.StructField("name", name_schema),
+    T.StructField("nationality", T.StringType(), True),
+    T.StructField("url", T.StringType(), True)
+])
+                            
+drivers_df  = spark.read.json(f"{raw_abfs_driver}/drivers.json", 
+                              schema=drivers_schema)
+
+```
+
+
 ## Common Patterns
 
 #### Importing Functions & Types
