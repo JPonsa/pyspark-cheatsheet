@@ -343,6 +343,8 @@ df = df.withColumn('date_of_birth', F.to_date('date_of_birth', 'yyyy-MM-dd'))
 # Convert a string of known format to a timestamp (includes time information)
 df = df.withColumn('time_of_birth', F.to_timestamp('time_of_birth', 'yyyy-MM-dd HH:mm:ss'))
 
+df = df.withColumn('race_timestamp', F.to_timestamp(F.concat(F.col('date), F.lit(' '), F.col('time)), 'yyyy-MM-dd HH:mm:ss')
+
 # Get year from date:       F.year(col)
 # Get month from date:      F.month(col)
 # Get day from date:        F.dayofmonth(col)
