@@ -88,6 +88,12 @@ len(df.columns)
 
 # Write output to disk
 df.write.csv('/path/to/your/output/file')
+df.write.parquet('/path/to/your/output/file')
+
+# Diffrent modes to write data. append / overwrite / error / ignore
+# See: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.mode.html
+
+df.write.mode('append').parquet(...)
 
 # Get results (WARNING: in-memory) as list of PySpark Rows
 df = df.collect()
