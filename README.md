@@ -21,6 +21,7 @@ A quick reference guide to the most commonly used patterns and functions in PySp
 - [Struct Operations](#struct-operations)
 - [Aggregation Operations](#aggregation-operations)
 - [Advanced Operations](#advanced-operations)
+    - [Partition](#patition)     
     - [Repartitioning](#repartitioning)
     - [UDFs (User Defined Functions](#udfs-user-defined-functions)
 - [Useful Functions / Tranformations](#useful-functions--transformations)
@@ -94,6 +95,9 @@ df.write.parquet('/path/to/your/output/file')
 # See: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.mode.html
 
 df.write.mode('append').parquet(...)
+
+# partition
+df.write.mode('overwrite').partitionBy('year').parque('/path/to/file')
 
 # Get results (WARNING: in-memory) as list of PySpark Rows
 df = df.collect()
@@ -442,6 +446,9 @@ df = df.drop("row_number")
 ```
 
 ## Advanced Operations
+
+#### Partition
+df.write.mode('overwrite').partitionBy('year').parque('/path/to/file')
 
 #### Repartitioning
 
