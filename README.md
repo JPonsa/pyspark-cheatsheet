@@ -150,10 +150,12 @@ df = df.filter(df.is_adult == 'Y')
 
 # Filter on >, <, >=, <= condition
 df = df.filter(df.age > 25)
+df =  df.filter(df["age"] = 25)
 df = df.filter("Salary <= 2000").select(["Name, "age])
 
 # Multiple conditions require parentheses around each condition
 df = df.filter((df.age > 25) & (df.is_adult == 'Y'))
+df = df.filter("age > 15 and is_adult = 'Y'")
 
 # Compare against a list of allowed values
 df = df.filter(F.col('first_name').isin([3, 4, 7]))
@@ -174,6 +176,17 @@ df = df.join(other_table, df.id == other_table.person_id, 'left')
 
 # Match on multiple columns
 df = df.join(other_table, ['first_name', 'last_name'], 'left')
+
+
+# Semi Joins
+# Same as inner join but getting only the columns from the left table
+
+# anti-join
+# Any thing on the left table not present in the right.
+df = df.join(other_table, df.id == other_table.person_id, 'anti')
+
+# Cross Join
+crossjoin_df = left_df.crossJoin(right_df)
 ```
 
 #### Union
