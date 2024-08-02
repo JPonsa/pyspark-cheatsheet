@@ -29,6 +29,7 @@ A quick reference guide to the most commonly used patterns and functions in PySp
 - [Resilient Distributed Datasets (RDDs)]
 - [Working with Delta Files](#Working-with-Delta-Files)
 - [pyspark Pandas](#Pandas)
+- [Run SQL](#Run_SQL)
 - [Other sources]
 
 If you can't find what you're looking for, check out the [PySpark Official Documentation](https://spark.apache.org/docs/latest/api/python/pyspark.sql.html) and add it here!
@@ -590,7 +591,12 @@ import pyspark.pandas as ps
 psdf = ps.from_pandas(df)
 df = psdf.to_pandas(psdf)
 ```
+### SQL
+```python
+df.createTmpView(v_my_view)
+tmp_df = spark.sql("SELECT * FROM v_my_view WHERE race_year = 2029")
 
+```
 
 #### Other Sources
 DataCamp
