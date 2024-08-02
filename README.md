@@ -593,9 +593,15 @@ df = psdf.to_pandas(psdf)
 ```
 ### Run_SQL
 ```python
-df.createTmpView("v_my_view")
+# Local temp view -  Only available on the session / notebook
+df.createTmpView("v_my_view") 
 df.createOrReplaceTempView("v_my_view")
 tmp_df = spark.sql("SELECT * FROM v_my_view WHERE race_year = 2029")
+
+# Global temp view
+df.createOrReplaceGlobalTempView("v_my_view")
+tmp_df = spark.sql("SELECT * FROM global_temp.v_my_view WHERE race_year = 2029")
+
 
 ```
 
