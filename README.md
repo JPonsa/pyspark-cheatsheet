@@ -593,7 +593,8 @@ df = psdf.to_pandas(psdf)
 ```
 ### Run_SQL
 ```python
-df.createTmpView(v_my_view)
+df.createTmpView("v_my_view")
+df.createOrReplaceTempView("v_my_view")
 tmp_df = spark.sql("SELECT * FROM v_my_view WHERE race_year = 2029")
 
 ```
