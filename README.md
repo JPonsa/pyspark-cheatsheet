@@ -480,6 +480,11 @@ window = W.partitionBy("first_name", "last_name").orderBy(F.desc("date"))
 df = df.withColumn("row_number", F.row_number().over(window))
 df = df.filter(F.col("row_number") == 1)
 df = df.drop("row_number")
+
+
+driverRankSpec = F.Window.partitionBy("race_year").orderBy(F.desc("total_points"))
+df =  df.withColumn("rank", F.rank().over(driverRankSpec))
+
 ```
 
 ## Advanced Operations
