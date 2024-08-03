@@ -618,8 +618,8 @@ deltaTable.update('rank <= 10', 'points': '21 - rank')
 # - Update existing records
 # - Remove records (if necessary)
 
+# Using SQL
 %sql
-
 MERGER INTO db.merge_table AS tgt
 USING tmp_table_1 AS upd
 ON.tgt.field1 = upd.field1
@@ -629,6 +629,25 @@ WHEN MATCHED THEN
                 tgt.updateDate = F.current_timestamp
 WHEN NOT MATCHED
     THEN INSERT (field1, field2, field3) VALUES(field1, field2, field3, F.current_timestamp)
+
+# Using pyspark
+
+from delta.tables import DeltaTable
+
+deltaTable = DeltaTable.forPath(spark, '/path/to/location/dataset_merge')
+
+deltaTable.alias("tgt").merge(
+    tmp_df.alias("upd"), "tgt.field1 = upd.field1") \
+    .whenMatchedUpdate(set = {"field2":"upd.field2", "field3":"upd.field3",
+                                "updateDate":"F.current_timestamp()"}) \
+    .whenNotMatchedInsert(values =
+    {
+        "field1": "upd.field1",
+        "field2": "upd.field2",
+        "field3": "upd.field3",
+        "createDate": "F.current_timestamp()"
+    })
+).execute()
 
 
 ```
