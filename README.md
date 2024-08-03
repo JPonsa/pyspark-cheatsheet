@@ -30,6 +30,7 @@ A quick reference guide to the most commonly used patterns and functions in PySp
 - [Working with Delta Files](#Working-with-Delta-Files)
 - [pyspark Pandas](#Pandas)
 - [Run SQL](#Run_SQL)
+- [Incremental Load](#Incremental_Load)
 - [Other sources]
 
 If you can't find what you're looking for, check out the [PySpark Official Documentation](https://spark.apache.org/docs/latest/api/python/pyspark.sql.html) and add it here!
@@ -601,7 +602,49 @@ tmp_df = spark.sql("SELECT * FROM v_my_view WHERE race_year = 2029")
 # Global temp view
 df.createOrReplaceGlobalTempView("v_my_view")
 tmp_df = spark.sql("SELECT * FROM global_temp.v_my_view WHERE race_year = 2029")
+```
 
+### Incremental_Load
+Method 1
+```python
+for partition_id_list in df.select("partition_id").distinct().collect():
+    if (spark._jsparkSession.catalog().tableExist("destination_table")):
+    spark.sql(f"ALTER TABLE destination_table DROP IF EXISTS PARTITION (partition_id = partition_id_list.partition_id)")
+
+df.write.mode("append").paritionBy(''partition_id).format("parquet").saveAsTable("destination_table")
+
+```
+Method 2
+This method assumes that the partition_id is the last column
+```python
+spark.conf.set("spark.sql.source.partitionOverwriteMode", "dynamic")
+
+if (spark._jsparkSession.catalog().tableExist("destination_table")):
+    df.write.mode("overwrite").insertInto("destination_table")
+else:
+    df.write.mode("overwrite").paritionBy(''partition_id).format("parquet").saveAsTable("destination_table")
+```
+
+Method 2.1 - Nice implementation
+```pythpn
+def re_arrange_partition_column(input_df, partition_column:str):
+    column_list = []
+    for col_name in input_df.schema.names:
+        if col_name != partition_column:
+            column_list.append(col_name)
+    column_list.append(partition_column)
+    output_df = input_df.select(column_list)
+    return output_df
+
+def overwrite_partition(input_df, db_name, table_name, parittion_column)->None:
+    output_df = re_arrange_partition_column(input_df, partition_column)
+
+    spark.conf.set("spark.sql.source.partitionOverwriteMode", "dynamic")
+
+    if (spark._jsparkSession.catalog().tableExist(f"{dn_name}.{table_name}")):
+        output_df.write.mode("overwrite").insertInto(f"{dn_name}.{table_name}")
+    else:
+        output_df.write.mode("overwrite").paritionBy(partition_column).format("parquet").saveAsTable(f"{dn_name}.{table_name}")
 
 ```
 
