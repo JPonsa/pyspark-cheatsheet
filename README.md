@@ -133,8 +133,6 @@ drivers_df  = spark.read.json(f"{raw_abfs_driver}/drivers.json",
                               schema=drivers_schema)
 
 ```
-
-
 ## Common Patterns
 
 #### Importing Functions & Types
@@ -583,6 +581,57 @@ https://images.datacamp.com/image/upload/v1676303379/Marketing/Blog/PySpark_RDD_
 
 #### Working with Delta files
 https://docs.delta.io/latest/quick-start.html#language-python
+
+
+```
+# Write a delta table that can be read using SQL
+df.write.format('delta').mode('overwrite').saveAsTable('db.dataset_managed')
+
+# Write directly into delta lake
+df.write.format('delta').mode('overwrite').save('/path/to/location/dataset_external')
+
+# Create SQL External Table
+%sql
+CREATE TABLE db.dataset_external
+USING DELTA
+LOCATION '/path/to/location/dataset_external'
+
+# Read external delta table
+df = spark.read.format('delta').load('/path/to/location/dataset_external')
+
+
+# Partition by
+df.write.format('delta').mode('overwrite').partitionBy('partition_id').saveAsTable('db.dataset_managed')
+
+# Update Delta table
+
+from detla.tables import DeltaTable
+
+df = DeltaTable.forPath(spark, ''/path/to/location/dataset_managed')
+# The 1st element is the where statement, the 2nd the update logic 
+deltaTable.update('rank <= 10', 'points': '21 - rank') 
+
+
+# Merge
+# In one steps:
+# - Insert new records.
+# - Update existing records
+# - Remove records (if necessary)
+
+%sql
+
+MERGER INTO db.merge_table AS tgt
+USING tmp_table_1 AS upd
+ON.tgt.field1 = upd.field1
+WHEN MATCHED THEN
+    UPDATE SET tgt.field2 = upd.field2,
+                tgt.field3 = upd.field3
+                tgt.updateDate = F.current_timestamp
+WHEN NOT MATCHED
+    THEN INSERT (field1, field2, field3) VALUES(field1, field2, field3, F.current_timestamp)
+
+
+```
 
 ### Pandas
 
